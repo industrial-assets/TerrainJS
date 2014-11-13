@@ -28,14 +28,16 @@ var TerrainJS = TerrainJS || {};
 
 (function () {
     
+    'use strict';
+    
     var Voronoi = function () {};
     var p = Voronoi.prototype;
     
     
-    p.init = function(canvasId, width, height, numFeatures, featureIntensity) {
+    p.init = function(width, height, numFeatures, featureIntensity) {
 		
         //initialize local variables
-        this.numFeatures = numFeatures,
+        this.numFeatures = numFeatures;
         this.featureIntensity = featureIntensity;
 
 		//generate points
@@ -44,7 +46,7 @@ var TerrainJS = TerrainJS || {};
 		//draw points
 		this.draw(width, height);
         
-	}
+	};
 	
     
     
@@ -70,7 +72,7 @@ var TerrainJS = TerrainJS || {};
 			}
 		}
 		
-	}
+	};
 	
     
     
@@ -79,29 +81,32 @@ var TerrainJS = TerrainJS || {};
 		// create features
 		var features = [];
 		for (var featnum=0;featnum<this.numFeatures;featnum++){
-			features.push({x:Math.floor(Math.random()*width), y:Math.floor(Math.random()*height)})
+			features.push({
+                x:Math.floor(Math.random()*width), 
+                y:Math.floor(Math.random()*height)
+            });
 		}
 		
 		var points = [];
 		for (var x = 0; x < width; x++)
 		{
-			points[x] = []
+			points[x] = [];
 			for (var y = 0; y < height; y++)
 			{
 				
-				var distArray = []
+				var distArray = [];
 				for (var f=0;f<features.length;f++) {
 					var d = (Math.pow(features[f].y - y,2) + Math.pow(features[f].x - x,2)) * this.featureIntensity;
 					distArray.push(d);
 				}
-				distArray.sort(function(a,b){return a - b});
+				distArray.sort(function(a,b){return a - b;});
 				var h = (-1*(distArray[0])) + (1*(distArray[1]));
 				points[x].push(h);
 			}
 		}
 		
 		return points;
-	}
+	};
 
 	
 	p.getColor = function(c) {
@@ -114,7 +119,7 @@ var TerrainJS = TerrainJS || {};
 			g: green,
 			b: blue
 		};
-	}
+	};
     
     
     TerrainJS.Voronoi = Voronoi;

@@ -24,9 +24,13 @@ THE SOFTWARE.
 
 */
 
+/*jshint bitwise: false*/
+
 var TerrainJS = TerrainJS || {};
 
 (function () {
+    
+    'use strict';
     
     var Plasma = function () { };
     var p = Plasma.prototype;
@@ -42,7 +46,7 @@ var TerrainJS = TerrainJS || {};
 		//draw points
 		this.draw(width, height);
         
-    }
+    };
     
     
     p.draw = function(width, height) {
@@ -61,7 +65,7 @@ var TerrainJS = TerrainJS || {};
 			}
 		}
         
-	}
+	};
     
     
     p.getPoints = function(width, height, roughness) {
@@ -78,7 +82,7 @@ var TerrainJS = TerrainJS || {};
 		p4 = Math.random();
 		this.splitRect( 0, 0, width, height, p1, p2, p3, p4, roughness);
         
-	}
+	};
 
     
 	p.splitRect = function( x, y, width, height, p1, p2, p3, p4, roughness) {
@@ -95,7 +99,7 @@ var TerrainJS = TerrainJS || {};
 			
 			//randomly shift the middle point 
             var totalSize = width + height;
-			center += this.shift(transWidth + transHeight, totalSize, roughness);
+			center += this.shift(transWidth + transHeight, totalSize*20, roughness);
 			
 			//sides are averages of the connected corners
 			//p1----p2
@@ -125,15 +129,15 @@ var TerrainJS = TerrainJS || {};
 			this.points[x][y]= (p1 + p2 + p3 + p4) / 4;
 		}
         
-	}
+	};
 
 	p.normalize = function(val) {  
 		return (val < 0) ? 0 : (val > 1) ? 1 : val;
-	}
+	};
   
 	p.shift = function(smallSize, totalSize, roughness) { 
 		return (Math.random() - 0.5) * smallSize / totalSize * roughness;
-	}
+	};
 	
 	p.getColor = function(c) {
 		var red = 0, green = 0, blue = 0;
@@ -145,7 +149,7 @@ var TerrainJS = TerrainJS || {};
 			g: green,
 			b: blue
 		};
-	}
+	};
     
     
     TerrainJS.Plasma = Plasma;

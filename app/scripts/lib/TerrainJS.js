@@ -24,12 +24,15 @@ THE SOFTWARE.
 
 */
 
-
+/*jshint bitwise: false */
+/*global THREE:false */
 
 var TerrainJS = TerrainJS || {};
 
 
 (function () {
+    
+    'use strict';
     
     var Engine = function (containerID) { this.$init(containerID); };
     var p = Engine.prototype;
@@ -64,22 +67,22 @@ var TerrainJS = TerrainJS || {};
 
 
         // get preview canvas
-        this.heightmapPreviewCanvas = document.getElementById("heightmapPreviewCanvas");
-        this.heightmapPreviewCTX = this.heightmapPreviewCanvas.getContext("2d");
+        this.heightmapPreviewCanvas = document.getElementById('heightmapPreviewCanvas');
+        this.heightmapPreviewCTX = this.heightmapPreviewCanvas.getContext('2d');
 
-        this.heightmapCanvas = document.createElement("canvas");
-        this.heightmapCanvasCTX = this.heightmapCanvas.getContext("2d");
+        this.heightmapCanvas = document.createElement('canvas');
+        this.heightmapCanvasCTX = this.heightmapCanvas.getContext('2d');
         
         this.plasma = new TerrainJS.Plasma();
         this.plasmaConfig = {
             roughness: 0
-        }
+        };
         
         this.voronoi = new TerrainJS.Voronoi();
         this.voronoiConfig = {
             numFeatures: 10,
 	        featureIntensity: 2
-        }
+        };
 
         $(window).on( 'resize', function () {
             me.onWindowResize();
@@ -110,14 +113,14 @@ var TerrainJS = TerrainJS || {};
 		
 		this.Render();
         
-    }
+    };
     
     
     p.DrawHeightmap = function () {
 	
-        this.plasma.init(this.heightmapCanvas.width, this.heightmapCanvas.height, this.plasmaConfig.rough)
+        this.plasma.init(this.heightmapCanvas.width, this.heightmapCanvas.height, this.plasmaConfig.rough);
 
-        this.voronoi.init(this.heightmapCanvas, this.heightmapCanvas.width, this.heightmapCanvas.height, this.voronoiConfig.numFeatures, this.voronoiConfig.featureIntensity);
+        this.voronoi.init(this.heightmapCanvas.width, this.heightmapCanvas.height, this.voronoiConfig.numFeatures, this.voronoiConfig.featureIntensity);
 
     };
     
@@ -125,7 +128,7 @@ var TerrainJS = TerrainJS || {};
     p.CreateTerrain = function () {
         
         var worldWidth = this.heightmapCanvas.width;
-        var worldHeight = this.heightmapCanvas.height
+        var worldHeight = this.heightmapCanvas.height;
 
         var geometry = new THREE.PlaneGeometry( 7500, 7500, worldWidth-1, worldHeight-1 );
         geometry.applyMatrix( new THREE.Matrix4().makeRotationX( - Math.PI / 2 ) );
@@ -149,7 +152,9 @@ var TerrainJS = TerrainJS || {};
         for ( var i = 0, l = geometry.vertices.length; i < l; i ++ ) {
 
             geometry.vertices[ i ].y = data[i] * 5;
-            if (data[i]*5 > highestPoint) highestPoint = data[i]*5;
+            if (data[i]*5 > highestPoint) {
+                highestPoint = data[i]*5;
+            }
 
         }
 
@@ -161,9 +166,9 @@ var TerrainJS = TerrainJS || {};
         this.camera.position.y = highestPoint*2;
         this.camera.position.z = 7500/2;
         this.camera.position.x = -7500/2;
-        this.camera.lookAt( new THREE.Vector3(0,0,0))
+        this.camera.lookAt( new THREE.Vector3(0,0,0));
 
-        texture = new THREE.Texture( this.GenerateTexture(data, worldWidth, worldHeight), new THREE.UVMapping(), THREE.ClampToEdgeWrapping, THREE.ClampToEdgeWrapping );
+        var texture = new THREE.Texture( this.GenerateTexture(data, worldWidth, worldHeight), new THREE.UVMapping(), THREE.ClampToEdgeWrapping, THREE.ClampToEdgeWrapping );
         texture.needsUpdate = true;
 
         this.scene.remove(this.mesh);
@@ -172,7 +177,7 @@ var TerrainJS = TerrainJS || {};
         this.mesh.castShadow = true;
         this.scene.add( this.mesh );
         
-    }
+    };
     
     
     
@@ -191,12 +196,12 @@ var TerrainJS = TerrainJS || {};
         image = context.getImageData(0, 0, texcanvas.width, texcanvas.height);
         imageData = image.data;
 
-        var inc=0
+        var inc = 0;
         for (var i = 0, j = 0, l = imageData.length; i < l; i += 4, j++) {
 
-            imageData[i] = 255//data[inc];
-            imageData[i + 1] = 255//data[inc];
-            imageData[i + 2] = 255//data[inc];
+            imageData[i] = 255;
+            imageData[i + 1] = 255;
+            imageData[i + 2] = 255;
 
             inc++;
         }
@@ -216,7 +221,7 @@ var TerrainJS = TerrainJS || {};
         image = context.getImageData(0, 0, texcanvasScaled.width, texcanvasScaled.height);
         imageData = image.data;
 
-        for (var i = 0, l = imageData.length; i < l; i += 4) {
+        for (i = 0; i < l; i += 4) {
 
             var v = ~~(Math.random() * 5 );
 
@@ -230,13 +235,13 @@ var TerrainJS = TerrainJS || {};
 
         return texcanvasScaled;
 
-    }
+    };
 
     p.Render = function() {
 
         this.renderer.render(this.scene, this.camera);
 
-    }
+    };
 
     p.onWindowResize = function() {
 
@@ -247,7 +252,7 @@ var TerrainJS = TerrainJS || {};
 
         this.Render();
 
-    }
+    };
 
 
     p.UpdatePreviewCanvas = function() {
@@ -255,7 +260,7 @@ var TerrainJS = TerrainJS || {};
         this.heightmapPreviewCTX.drawImage(this.heightmapCanvas,0,0, 256, 256);
         this.heightmapPreviewCTX.restore();
 
-    }
+    };
     
     
     TerrainJS.Engine = Engine;
